@@ -3,7 +3,9 @@
 An ecommerce demo. The product catalog and orders are persisted in a SQL
 database — either Neon Serverless Postgres or TiDB Cloud (MySQL-compatible),
 auto-detected from `DATABASE_URL`; the live cart stays in the browser's
-`localStorage` until checkout. No authentication yet.
+`localStorage` until checkout. Authentication (email + password, via
+[Better Auth](https://www.better-auth.com/)) is optional — checkout works
+both logged in and as a guest.
 
 ## Set up the database
 
@@ -26,6 +28,14 @@ config needed.
    `mysql://<user>:<password>@<host>:4000/<database>`. TLS is required by TiDB
    Cloud's public endpoint and is enabled automatically by `server/db.js` — no
    extra `ssl` config needed in the connection string.
+
+### Set up authentication
+
+Also in `.env`, set `BETTER_AUTH_SECRET` (a random signing key, e.g.
+`openssl rand -base64 32` — anyone with it can forge sessions) and
+`BETTER_AUTH_URL` (the app's own base URL, e.g. `http://localhost:3000`).
+Authentication is optional for shoppers — checkout works whether or not
+they're logged in — but Better Auth itself needs both variables set.
 
 ### Seed the schema and product catalog
 
@@ -68,6 +78,8 @@ artifact. Set `DATABASE_URL` in the deploy environment the same way as local dev
 - **Cart** (`/cart`) — update quantity, remove items, subtotal/total
 - **Checkout** (`/checkout`) — shipping form, places a real order via the API (no payment)
 - **Order confirmation** (`/order-confirmation`) — shows the order ID returned by the API
+- **Login** (`/login`) / **Signup** (`/signup`) — email + password via Better Auth; optional,
+  checkout works as a guest too
 
 ## Where things live
 
@@ -87,8 +99,11 @@ artifact. Set `DATABASE_URL` in the deploy environment the same way as local dev
   scheme and exposes both behind the same `pool.query()` shape.
 - `server/db/` — schema (`schema.sql` for Postgres, `schema.mysql.sql` for MySQL/TiDB) and the
   seed script.
+- `server/auth.js` — builds the Better Auth instance (email + password) from the raw driver
+  pool; mounted at `/api/auth/*splat` in `server/app.js`.
+- `src/context/AuthContext.jsx` — wraps Better Auth's React client (`useSession`, `login`,
+  `signup`, `logout`) for the rest of the app.
 
 ## Extending this later
 
-- Add a login/auth flow and gate checkout behind it.
-- Sync the live cart server-side per user once there's authentication.
+- Sync the live cart server-side per user now that there's authentication.
