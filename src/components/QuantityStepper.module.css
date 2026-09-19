@@ -1,0 +1,32 @@
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.button {
+  background: var(--color-bg);
+  border: none;
+  width: 30px;
+  height: 30px;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--color-border);
+}
+
+.button:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.value {
+  min-width: 32px;
+  text-align: center;
+  font-weight: 600;
+}
