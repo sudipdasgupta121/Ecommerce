@@ -24,9 +24,15 @@ npm run db:inspect # prints dialect, product count, and the 5 most recent orders
 npm run db:migrate # copies products + orders from SOURCE_DATABASE_URL to TARGET_DATABASE_URL (e.g. Postgres <-> MySQL/TiDB); leaves DATABASE_URL untouched
 npm run lint       # oxlint
 npm run preview    # vite preview (static preview of the build, no API)
+npm run test:e2e   # Playwright UI regression suite, headed, against an isolated test DB+port
+npm run test:e2e:debug   # same, under the Playwright Inspector
+npm run test:e2e:report  # open the last HTML report (trace/screenshots/video on failure)
+npm run test:e2e -- tests/e2e/auth.spec.js           # run a single spec file
+npm run test:e2e -- -g "name of test"                # run tests matching a title
 ```
 
-There is no test suite configured in this repo.
+There is no unit/component test suite configured in this repo. There is a Playwright
+end-to-end suite — see "End-to-end tests" below.
 
 ### Database setup
 
@@ -37,6 +43,16 @@ unset. Run `npm run db:setup` after setting it to create/update the `products`, 
 Better Auth (`user`/`session`/`account`/`verification`) tables and seed the catalog. Also
 requires `BETTER_AUTH_SECRET` (session/cookie signing key) and `BETTER_AUTH_URL` in `.env` —
 see `.env.example`.
+
+### End-to-end tests
+
+`tests/e2e/` is a Playwright UI regression suite (`npm run test:e2e`), built with the
+`e2e-test-suite-ui-playwright` Claude Code skill. It always runs headed (`headless: false`,
+non-configurable) and always requires its own `tests/e2e/.env.e2e` with a `TEST_DATABASE_URL`
+distinct from this app's real `DATABASE_URL` — `global-setup.js` refuses to run otherwise. It
+builds and starts the app on an isolated port (3100 by default) against that test database,
+reseeds the product catalog, and resets `orders`/Better Auth tables before every run. See
+`tests/e2e/README.md` for the full rundown and what each spec covers.
 
 ## Architecture
 

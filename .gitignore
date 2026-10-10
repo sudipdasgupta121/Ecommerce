@@ -13,6 +13,12 @@ dist-ssr
 *.local
 .env
 
+# Playwright e2e suite — always a dedicated test DB, never committed
+tests/e2e/.env.e2e
+test-results/
+playwright-report/
+blob-report/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

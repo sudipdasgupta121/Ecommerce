@@ -11,7 +11,10 @@
     "db:inspect": "node server/db/inspect.js",
     "db:migrate": "node server/db/migrate.js",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test --config=tests/e2e/playwright.config.js",
+    "test:e2e:debug": "playwright test --config=tests/e2e/playwright.config.js --debug",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "better-auth": "^1.7.5",
@@ -24,6 +27,7 @@
     "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
