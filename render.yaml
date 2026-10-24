@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: shopfront
+    runtime: node
+    plan: free
+    buildCommand: npm install --include=dev && npm run build && npm run db:setup
+    startCommand: npm start
+    healthCheckPath: /api/products
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: DATABASE_URL
+        sync: false
+      - key: BETTER_AUTH_URL
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
